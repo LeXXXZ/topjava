@@ -29,17 +29,16 @@ public class UserMealsUtil {
         Map<LocalDate, Integer> caloriesPerDate = new HashMap<>();
         for (UserMeal meal : mealList) {
             if (Objects.nonNull(meal)) {
-                LocalDate date = meal.getDateTime().toLocalDate();
-                caloriesPerDate.put(date,
-                        caloriesPerDate.merge(date, meal.getCalories(), (oldCalories, newCalories) -> oldCalories + newCalories));
+                caloriesPerDate.put(meal.getDate(),
+                        caloriesPerDate.merge(meal.getDate(), meal.getCalories(), Integer::sum));
             }
         }
 
         List<UserMealWithExceed> filteredWithExceededList = new ArrayList<>();
         for (UserMeal meal : mealList) {
             if (Objects.nonNull(meal)) {
-                if (TimeUtil.isBetween(meal.getDateTime().toLocalTime(), startTime, endTime)) {
-                    boolean exceeded = caloriesPerDate.get(meal.getDateTime().toLocalDate()) > caloriesPerDay;
+                if (TimeUtil.isBetween(meal.getTime(), startTime, endTime)) {
+                    boolean exceeded = caloriesPerDate.get(meal.getDate()) > caloriesPerDay;
                     filteredWithExceededList.add(new UserMealWithExceed(meal.getDateTime(), meal.getDescription(), meal.getCalories(), exceeded));
                 }
             }
