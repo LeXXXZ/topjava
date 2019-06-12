@@ -44,7 +44,7 @@ public class MealDaoInMemoryImpl implements MealDao {
     @Override
     public Meal getById(int id) {
         log.debug("return meal");
-        return dao.get(id);
+        return dao.getOrDefault(id, new Meal(LocalDateTime.now(), "description", 1000));
     }
 
     @Override

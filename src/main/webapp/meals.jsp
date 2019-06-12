@@ -16,12 +16,12 @@
         <td>Date/Time</td>
         <td>Description</td>
         <td>Calories</td>
-        <td>Edit</td>
-        <td>Delete</td>
+        <td></td>
+        <td></td>
     </tr>
     <jsp:useBean id="meals" scope="request" type="java.util.List"/>
     <c:forEach var="meal" items="${meals}">
-        <jsp:useBean beanName="mealTo" id="meal" type="ru.javawebinar.topjava.model.MealTo"/>
+        <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.MealTo"/>
         <tr style="color: ${meal.excess ? 'red' :  'green'} ;">
             <td hidden>${meal.id}</td>
             <fmt:parseDate value="${meal.dateTime}" pattern="yyyy-MM-dd'T'HH:mm" type="both" var="parsedDateTime"/>
