@@ -1,6 +1,8 @@
 package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
+import ru.javawebinar.topjava.dao.MealDao;
+import ru.javawebinar.topjava.dao.MealDaoInMemoryImpl;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealTo;
 
@@ -21,20 +23,13 @@ import static ru.javawebinar.topjava.util.MealsUtil.getFilteredWithExcess;
 public class MealServlet extends HttpServlet {
     private static final Logger log = getLogger(MealServlet.class);
 
-    final static List<Meal> MEALS = Arrays.asList(
-            new Meal(LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500),
-            new Meal(LocalDateTime.of(2015, Month.MAY, 30, 13, 0), "Обед", 1000),
-            new Meal(LocalDateTime.of(2015, Month.MAY, 30, 20, 0), "Ужин", 500),
-            new Meal(LocalDateTime.of(2015, Month.MAY, 31, 10, 0), "Завтрак", 1000),
-            new Meal(LocalDateTime.of(2015, Month.MAY, 31, 13, 0), "Обед", 500),
-            new Meal(LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 510)
-    );
+    private MealDao dao = new MealDaoInMemoryImpl();
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.debug("redirect to meallist");
 
-        List<MealTo> mealsWithExcess = getFilteredWithExcess(MEALS, LocalTime.MIN, LocalTime.MAX, 2000);
-        request.setAttribute("meals", mealsWithExcess );
+        List<MealTo> mealsWithExcess = getFilteredWithExcess(dao.getAll(), LocalTime.MIN, LocalTime.MAX, 2000);
+        request.setAttribute("meals", mealsWithExcess);
         request.getRequestDispatcher("/meals.jsp").forward(request, response);
 
 
