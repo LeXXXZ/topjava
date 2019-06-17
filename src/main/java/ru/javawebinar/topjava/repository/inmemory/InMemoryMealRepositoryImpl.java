@@ -18,9 +18,10 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 @Repository
 public class InMemoryMealRepositoryImpl implements MealRepository {
+    private static final Logger log = getLogger(InMemoryMealRepositoryImpl.class);
+
     private Map<Integer, Meal> repository = new ConcurrentHashMap<>();
     private AtomicInteger counter = new AtomicInteger(0);
-    private static final Logger log = getLogger(InMemoryMealRepositoryImpl.class);
 
     {
         for (Meal MEAL : MealsUtil.MEALS) {
@@ -31,15 +32,15 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
     @Override
     public Meal save(Meal meal, Integer userId) {
         log.info("save {} for user: {}", meal, userId);
-        if (meal.getUserId().equals(userId)) {
+
             if (meal.isNew()) {
                 meal.setId(counter.incrementAndGet());
+                meal.setUserId(userId);
                 repository.put(meal.getId(), meal);
                 return meal;
             }
             // treat case: update, but absent in storage
             return repository.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
-        } else return null;
     }
 
     @Override

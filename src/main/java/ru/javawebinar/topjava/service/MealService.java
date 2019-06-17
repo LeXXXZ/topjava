@@ -8,6 +8,8 @@ import java.util.Collection;
 public interface MealService {
     Meal save(Meal meal, Integer userId);
 
+    Meal update(Meal meal, Integer userId);
+
     void delete(int id, Integer userId) throws NotFoundException;
 
     Meal get(int id, Integer userId) throws NotFoundException;
