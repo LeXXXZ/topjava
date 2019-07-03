@@ -5,12 +5,9 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -26,14 +23,19 @@ public class JpaMealRepository implements MealRepository {
     @Transactional
     public Meal save(Meal meal, int userId) {
         User ref = em.getReference(User.class, userId);
-        meal.setUser(ref);
         if (meal.isNew()) {
+            meal.setUser(ref);
             em.persist(meal);
             return meal;
-        }
-        else {
-            return em.merge(meal);
+        } else {
+            if (em.find(Meal.class, meal.getId())
+                    .getUser().getId() != userId) {
+                return null;
+            } else {
+                meal.setUser(ref);
+                return em.merge(meal);
             }
+        }
     }
 
     @Override
@@ -47,15 +49,10 @@ public class JpaMealRepository implements MealRepository {
 
     @Override
     public Meal get(int id, int userId) {
-
-        try {
-            return em.createNamedQuery(Meal.GET, Meal.class)
-                    .setParameter("id", id)
-                    .setParameter("userId", userId)
-                    .getSingleResult();
-        } catch (NoResultException e) {
-            throw new NotFoundException("No such entity");
-        }
+        Meal result = em.find(Meal.class, id);
+        if (result == null || result.getUser().getId() != userId) {
+            return null;
+        } else return result;
     }
 
     @Override
