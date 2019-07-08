@@ -9,7 +9,7 @@ import ru.javawebinar.topjava.repository.MealRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Transactional
+@Transactional(readOnly = true)
 @Repository
 public class DataJpaMealRepository implements MealRepository {
 
@@ -28,6 +28,7 @@ public class DataJpaMealRepository implements MealRepository {
         return crudRepository.save(meal);
     }
 
+    @Transactional
     @Override
     public boolean delete(int id, int userId) {
         return crudRepository.delete(id, userId)!=0;

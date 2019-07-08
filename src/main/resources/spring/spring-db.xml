@@ -11,16 +11,13 @@
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
        http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
+    <jdbc:initialize-database data-source="dataSource" enabled="${database.init}">
+        <jdbc:script location="classpath:db/${jdbc.initLocation}"/>
+        <jdbc:script encoding="utf-8" location="classpath:db/populateDB.sql"/>
+    </jdbc:initialize-database>
+
     <beans profile="hsqldb">
         <context:property-placeholder location="classpath:db/hsqldb.properties" system-properties-mode="OVERRIDE"/>
-
-        <!--no pooling-->
-        <bean id="dataSource"
-              class="org.springframework.jdbc.datasource.DriverManagerDataSource"
-              p:driverClassName="org.hsqldb.jdbcDriver"
-              p:url="${database.url}"
-              p:username="${database.username}"
-              p:password="${database.password}"/>
     </beans>
 
     <beans profile="postgres">
@@ -32,6 +29,14 @@
         <bean class="org.springframework.beans.factory.config.MethodInvokingBean">
             <property name="staticMethod" value="org.slf4j.bridge.SLF4JBridgeHandler.install" />
         </bean>
+
+        <!--no pooling-->
+        <!--<bean id="dataSource"-->
+              <!--class="org.springframework.jdbc.datasource.DriverManagerDataSource"-->
+              <!--p:driverClassName="org.hsqldb.jdbcDriver"-->
+              <!--p:url="${database.url}"-->
+              <!--p:username="${database.username}"-->
+              <!--p:password="${database.password}"/>-->
 
         <context:property-placeholder location="classpath:db/postgres.properties" system-properties-mode="OVERRIDE"/>
 
@@ -53,10 +58,6 @@
             <constructor-arg ref="jdbcTemplate"/>
         </bean>
 
-        <jdbc:initialize-database data-source="dataSource" enabled="${database.init}">
-            <jdbc:script location="classpath:db/${jdbc.initLocation}"/>
-            <jdbc:script encoding="utf-8" location="classpath:db/populateDB.sql"/>
-        </jdbc:initialize-database>
     </beans>
     <beans profile="datajpa, jpa">
         <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
