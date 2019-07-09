@@ -2,6 +2,7 @@ package ru.javawebinar.topjava.repository.datajpa;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
@@ -18,7 +19,7 @@ public class DataJpaMealRepository implements MealRepository {
     @Autowired
     private CrudUserRepository userRepository;
 
-    @Transactional
+    @Transactional(propagation=Propagation.REQUIRED)
     @Override
     public Meal save(Meal meal, int userId) {
         if (!meal.isNew() && get(meal.getId(), userId) == null) {
@@ -28,7 +29,7 @@ public class DataJpaMealRepository implements MealRepository {
         return crudRepository.save(meal);
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public boolean delete(int id, int userId) {
         return crudRepository.delete(id, userId)!=0;
