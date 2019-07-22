@@ -32,12 +32,12 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
         assertMatch(service.getAll(USER_ID), MEAL6, MEAL5, MEAL4, MEAL3, MEAL2);
     }
 
-    @Test
+    @Test(expected = NotFoundException.class)
     public void deleteNotFound() {
         service.delete(1, USER_ID);
     }
 
-    @Test
+    @Test(expected = NotFoundException.class)
     public void deleteNotOwn() {
         service.delete(MEAL1_ID, ADMIN_ID);
     }
@@ -63,7 +63,7 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
         service.get(1, ADMIN_ID);
     }
 
-    @Test
+    @Test(expected = NotFoundException.class)
     public void getNotOwn() {
         service.get(MEAL1_ID, ADMIN_ID);
     }
@@ -75,7 +75,7 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
         assertMatch(service.get(MEAL1_ID, USER_ID), updated);
     }
 
-    @Test
+    @Test(expected = NotFoundException.class)
     public void updateNotFound() {
         service.update(MEAL1, ADMIN_ID);
     }

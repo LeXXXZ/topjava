@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.Date;
 
 
-public class AbstractJpaOnlyUserServiceTest extends AbstractUserServiceTest {
+abstract public class AbstractJpaOnlyUserServiceTest extends AbstractUserServiceTest {
     @Autowired
     protected JpaUtil jpaUtil;
 
