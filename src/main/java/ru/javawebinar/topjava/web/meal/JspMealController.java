@@ -1,8 +1,5 @@
 package ru.javawebinar.topjava.web.meal;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -10,9 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.service.MealService;
-import ru.javawebinar.topjava.to.MealTo;
-import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +15,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 import java.util.Objects;
 
 import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalDate;
@@ -31,37 +24,25 @@ import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 
 @Controller
 @RequestMapping(value = "/meals")
-public class JspMealController {
-    @Autowired
-    private MealService service;
-
-    private static final Logger log = LoggerFactory.getLogger(JspMealController.class);
+public class JspMealController extends AbstractMealController{
 
     @GetMapping("")
     public String meals(Model model) {
-        int userId = SecurityUtil.authUserId();
-        log.info("getAll for user {}", userId);
-        List<MealTo> mealsWithExc = MealsUtil.getWithExcess(service.getAll(userId), SecurityUtil.authUserCaloriesPerDay());
-        model.addAttribute("meals", mealsWithExc);
+        model.addAttribute("meals", getAll());
         return "meals";
     }
 
     @GetMapping("/delete")
     public String delete(HttpServletRequest request) {
         int id = getId(request);
-        int userId = SecurityUtil.authUserId();
-        log.info("delete meal {} for user {}", id, userId);
-        service.delete(id, userId);
+        delete(id);
         return "redirect:/meals";
     }
 
     @GetMapping("/create")
     public String create(HttpServletRequest request) {
         Meal newMeal = new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "Новая еда", 1000);
-        int userId = SecurityUtil.authUserId();
-        checkNew(newMeal);
-        log.info("create {} for user {}", newMeal, userId);
-        request.setAttribute("meal", service.create(newMeal, userId));
+        request.setAttribute("meal", create(newMeal));
         return "mealForm";
     }
 
@@ -69,9 +50,7 @@ public class JspMealController {
     @GetMapping("/update")
     public String update(HttpServletRequest request) {
         int id = getId(request);
-        int userId = SecurityUtil.authUserId();
-        log.info("get meal {} for user {}", id, userId);
-        request.setAttribute("meal", service.get(id, userId));
+        request.setAttribute("meal", get(id));
         return "mealForm";
 
     }
@@ -82,10 +61,7 @@ public class JspMealController {
         LocalDate endDate = parseLocalDate(request.getParameter("endDate"));
         LocalTime startTime = parseLocalTime(request.getParameter("startTime"));
         LocalTime endTime = parseLocalTime(request.getParameter("endTime"));
-        int userId = SecurityUtil.authUserId();
-        log.info("getBetween dates({} - {}) time({} - {}) for user {}", startDate, endDate, startTime, endTime, userId);
-        List<Meal> mealsDateFiltered = service.getBetweenDates(startDate, endDate, userId);
-        request.setAttribute("meals", MealsUtil.getFilteredWithExcess(mealsDateFiltered, SecurityUtil.authUserCaloriesPerDay(), startTime, endTime));
+        request.setAttribute("meals", getBetween(startDate, startTime, endDate, endTime));
         return "meals";
     }
 
