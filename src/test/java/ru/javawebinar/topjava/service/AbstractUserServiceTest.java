@@ -29,13 +29,13 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     protected JpaUtil jpaUtil;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         cacheManager.getCache("users").clear();
         jpaUtil.clear2ndLevelHibernateCache();
     }
 
     @Test
-    public void create() {
+    public void create() throws Exception {
         User newUser = new User(null, "New", "new@gmail.com", "newPass", 1555, false, new Date(), Collections.singleton(Role.ROLE_USER));
         User created = service.create(newUser);
         newUser.setId(created.getId());
@@ -44,12 +44,12 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     }
 
     @Test(expected = DataAccessException.class)
-    public void duplicateMailCreate() {
+    public void duplicateMailCreate() throws Exception {
         service.create(new User(null, "Duplicate", "user@yandex.ru", "newPass", Role.ROLE_USER));
     }
 
     @Test
-    public void delete() {
+    public void delete() throws Exception {
         service.delete(USER_ID);
         assertMatch(service.getAll(), ADMIN);
     }
@@ -66,18 +66,18 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     }
 
     @Test(expected = NotFoundException.class)
-    public void getNotFound() {
+    public void getNotFound() throws Exception {
         service.get(1);
     }
 
     @Test
-    public void getByEmail() {
+    public void getByEmail() throws Exception {
         User user = service.getByEmail("user@yandex.ru");
         assertMatch(user, USER);
     }
 
     @Test
-    public void update() {
+    public void update() throws Exception {
         User updated = new User(USER);
         updated.setName("UpdatedName");
         updated.setCaloriesPerDay(330);
@@ -86,7 +86,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    public void getAll() {
+    public void getAll() throws Exception {
         List<User> all = service.getAll();
         assertMatch(all, ADMIN, USER);
     }
