@@ -1,7 +1,10 @@
 package ru.javawebinar.topjava.to;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import java.time.LocalDateTime;
 
+@Access(AccessType.FIELD)
 public class MealTo {
     private final Integer id;
 
