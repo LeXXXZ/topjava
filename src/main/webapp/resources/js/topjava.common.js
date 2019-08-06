@@ -42,7 +42,7 @@ function save() {
         data: form.serialize()
     }).done(function () {
         $("#editRow").modal("hide");
-        updateTable();
+        updateTableWithFilter(data);
         successNoty("Saved");
     });
 }

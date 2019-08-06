@@ -40,7 +40,7 @@ function filter() {
         type: "GET",
         data:  $("#filter").serialize()
     }).done(function (data) {
-        context.datatableApi.clear().rows.add(data).draw();
+        updateTableWithFilter(data);
         successNoty("Filtered");
     });
 }
@@ -48,4 +48,7 @@ function filter() {
 function resetInput() {
     $("#filter")[0].reset();
     updateTable();
+}
+function updateTableWithFilter(data) {
+    context.datatableApi.clear().rows.add(data).draw();
 }
