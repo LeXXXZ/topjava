@@ -33,3 +33,18 @@ $(function () {
         }
     );
 });
+
+function filter() {
+    $.ajax({
+        url: "ajax/profile/meals/filter/",
+        type: "GET",
+        data:  $("#filter").serialize()
+    }).done(function (data) {
+        context.datatableApi.clear().rows.add(data).draw();
+        successNoty("Filtered");
+    });
+}
+
+function resetInput() {
+    $("#filter")[0].reset();
+}
