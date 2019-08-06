@@ -47,4 +47,5 @@ function filter() {
 
 function resetInput() {
     $("#filter")[0].reset();
+    updateTable();
 }
