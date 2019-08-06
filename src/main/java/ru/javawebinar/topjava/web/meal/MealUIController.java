@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.web.meal;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -7,6 +8,7 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.to.MealTo;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -27,23 +29,17 @@ public class MealUIController extends AbstractMealController {
         return super.getAll();
     }
 
-    @Override
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void update(@RequestBody Meal meal, @PathVariable int id) {
-        super.update(meal, id);
+    public void createOrUpdate(@RequestParam("id") Integer id,
+                               @RequestParam("datetime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime datetime,
+                               @RequestParam("description") String description,
+                               @RequestParam("calories") Integer calories) {
+        Meal meal = new Meal(id, datetime, description, calories);
+        if (meal.isNew()) {
+            super.create(meal);
+        }
     }
-
-//    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<Meal> createWithLocation(@RequestBody Meal meal) {
-//        Meal created = super.create(meal);
-//
-//        URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
-//                .path(REST_URL + "/{id}")
-//                .buildAndExpand(created.getId()).toUri();
-//
-//        return ResponseEntity.created(uriOfNewResource).body(created);
-//    }
 
     @Override
     @GetMapping(value = "/filter")
