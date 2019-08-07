@@ -30,7 +30,7 @@ function deleteRow(id) {
 }
 
 function getAll() {
-    $.get(context.ajaxUrl, tableRefresh(data));
+    $.get(context.ajaxUrl, function (data){tableRefresh(data)});
 }
 
 function tableRefresh(data) {
