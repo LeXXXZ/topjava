@@ -40,3 +40,7 @@ $(function () {
         }
     );
 });
+
+function updateTable() {
+   getAll();
+}

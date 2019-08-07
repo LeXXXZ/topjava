@@ -29,7 +29,7 @@ function deleteRow(id) {
     }
 }
 
-function updateTable() {
+function getAll() {
     $.get(context.ajaxUrl, function (data) {
         context.datatableApi.clear().rows.add(data).draw();
     });
@@ -42,7 +42,7 @@ function save() {
         data: form.serialize()
     }).done(function () {
         $("#editRow").modal("hide");
-        updateTableWithFilter(data);
+        updateTable();
         successNoty("Saved");
     });
 }

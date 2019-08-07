@@ -35,20 +35,26 @@ $(function () {
 });
 
 function filter() {
+    /*$.get("ajax/profile/meals/filter/"
+        , $("#filter").serialize()
+        , function (data) {
+            context.datatableApi.clear().rows.add(data).draw();
+        }
+    );*/
     $.ajax({
         url: "ajax/profile/meals/filter/",
         type: "GET",
-        data:  $("#filter").serialize()
+        data: $("#filter").serialize()
     }).done(function (data) {
-        updateTableWithFilter(data);
-        successNoty("Filtered");
+        context.datatableApi.clear().rows.add(data).draw();
     });
 }
 
 function resetInput() {
     $("#filter")[0].reset();
-    updateTable();
+    getAll();
 }
-function updateTableWithFilter(data) {
-    context.datatableApi.clear().rows.add(data).draw();
+
+function updateTable() {
+    filter();
 }
