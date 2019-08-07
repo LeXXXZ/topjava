@@ -30,9 +30,11 @@ function deleteRow(id) {
 }
 
 function getAll() {
-    $.get(context.ajaxUrl, function (data) {
+    $.get(context.ajaxUrl, tableRefresh(data));
+}
+
+function tableRefresh(data) {
         context.datatableApi.clear().rows.add(data).draw();
-    });
 }
 
 function save() {

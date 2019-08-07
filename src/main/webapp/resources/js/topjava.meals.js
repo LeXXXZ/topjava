@@ -45,9 +45,7 @@ function filter() {
         url: "ajax/profile/meals/filter/",
         type: "GET",
         data: $("#filter").serialize()
-    }).done(function (data) {
-        context.datatableApi.clear().rows.add(data).draw();
-    });
+    }).done(tableRefresh(data));
 }
 
 function resetInput() {
