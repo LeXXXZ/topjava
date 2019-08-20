@@ -130,4 +130,27 @@ class AdminRestControllerTest extends AbstractControllerTest {
 
         assertFalse(userService.get(USER_ID).isEnabled());
     }
+
+    @Test
+    void createNotValid() throws Exception {
+        User notValidCreated = new User(null, null, "", "1", 5001, Role.ROLE_USER);
+        mockMvc.perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(ADMIN))
+                .content(JsonUtil.writeValue(notValidCreated)))
+                .andExpect(status().isUnprocessableEntity())
+                .andDo(print());
+    }
+
+    @Test
+    void updateNotValid() throws Exception {
+        User notValidUpdated = new User(USER);
+        notValidUpdated.setName("");
+        mockMvc.perform(MockMvcRequestBuilders.put(REST_URL + USER_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(ADMIN))
+                .content(JsonUtil.writeValue(notValidUpdated)))
+                .andExpect(status().isUnprocessableEntity())
+                .andDo(print());
+    }
 }
