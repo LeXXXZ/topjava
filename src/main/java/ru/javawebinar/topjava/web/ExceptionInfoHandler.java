@@ -59,7 +59,7 @@ public class ExceptionInfoHandler {
             result = ((BindException) e).getBindingResult();
         }
             else {
-                ((MethodArgumentNotValidException) e).getBindingResult();
+            result =((MethodArgumentNotValidException) e).getBindingResult();
             }
 
         List<String> detailsList = new ArrayList<>();
