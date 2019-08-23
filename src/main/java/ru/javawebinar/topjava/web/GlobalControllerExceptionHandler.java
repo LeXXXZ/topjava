@@ -19,12 +19,26 @@ public class GlobalControllerExceptionHandler {
     @Autowired
     private MessageUtil messageUtil;
 
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public ModelAndView wrongRequest(HttpServletRequest req, NoHandlerFoundException e) throws Exception {
+        return logAndGetExceptionView(req, e, false, ErrorType.WRONG_REQUEST, null);
+    }
+
+    @ExceptionHandler(ApplicationException.class)
+    public ModelAndView applicationErrorHandler(HttpServletRequest req, ApplicationException appEx) throws Exception {
+        return logAndGetExceptionView(req, appEx, true, appEx.getType(), messageUtil.getMessage(appEx));
+    }
+
     @ExceptionHandler(Exception.class)
     public ModelAndView defaultErrorHandler(HttpServletRequest req, Exception e) throws Exception {
-        log.error("Exception at request " + req.getRequestURL(), e);
-        Throwable rootCause = ValidationUtil.getRootCause(e);
+        return logAndGetExceptionView(req, e, true, ErrorType.APP_ERROR, null);
+    }
+
+    private ModelAndView logAndGetExceptionView(HttpServletRequest req, Exception e, boolean logException, ErrorType errorType, String msg) {
+        Throwable rootCause = ValidationUtil.logAndGetRootCause(log, req, e, logException, errorType);
+
         ModelAndView mav = new ModelAndView("exception/exception");
-        mav.addObject("typeMessage", messageUtil.getMessage(ErrorType.APP_ERROR.getErrorCode()));
+        mav.addObject("typeMessage", messageUtil.getMessage(errorType.getErrorCode()));
         mav.addObject("exception", rootCause);
         mav.addObject("message", ValidationUtil.getMessage(rootCause));
 
